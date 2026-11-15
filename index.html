@@ -1,0 +1,1181 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AGENT STUDIO｜AI 開發規範管理平台</title>
+
+<style>
+:root {
+    --bg: #f5f5f5;
+    --white: #ffffff;
+    --black: #171717;
+    --gray: #737373;
+    --light: #e5e5e5;
+    --border: #dedede;
+    --hover: #f0f0f0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: "Microsoft JhengHei", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--black);
+}
+
+button, textarea, input, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+header {
+    height: 70px;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 6%;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.logo {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.logo span {
+    background: var(--black);
+    color: white;
+    padding: 6px 9px;
+    border-radius: 6px;
+    margin-right: 8px;
+}
+
+nav {
+    display: flex;
+    gap: 10px;
+}
+
+nav button {
+    border: 0;
+    background: transparent;
+    color: #555;
+    padding: 10px 14px;
+    border-radius: 7px;
+}
+
+nav button:hover,
+nav button.active {
+    background: var(--black);
+    color: white;
+}
+
+main {
+    max-width: 1250px;
+    margin: auto;
+    padding: 35px 24px 70px;
+}
+
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
+}
+
+.hero {
+    background: var(--black);
+    color: white;
+    padding: 75px 55px;
+    border-radius: 15px;
+    margin-bottom: 35px;
+}
+
+.tag {
+    font-size: 12px;
+    letter-spacing: 2px;
+    color: #aaa;
+}
+
+.hero h1 {
+    font-size: clamp(30px, 5vw, 52px);
+    margin: 20px 0 12px;
+}
+
+.hero p {
+    color: #c4c4c4;
+    line-height: 2;
+    max-width: 650px;
+}
+
+.btn {
+    padding: 11px 18px;
+    border: 1px solid var(--black);
+    border-radius: 7px;
+    background: var(--black);
+    color: white;
+    transition: .2s;
+}
+
+.btn:hover {
+    background: #444;
+}
+
+.btn.light {
+    background: white;
+    color: var(--black);
+    border-color: var(--border);
+}
+
+.btn.light:hover {
+    background: var(--hover);
+}
+
+.btn.small {
+    padding: 8px 12px;
+    font-size: 13px;
+}
+
+.section-title {
+    font-size: 26px;
+    margin: 35px 0 18px;
+}
+
+.section-desc {
+    color: var(--gray);
+    margin-top: -10px;
+    line-height: 1.8;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    padding: 25px;
+    transition: .2s;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    border-color: #999;
+}
+
+.card-icon {
+    font-size: 27px;
+    margin-bottom: 15px;
+}
+
+.card h3 {
+    margin: 5px 0 10px;
+}
+
+.card p {
+    color: var(--gray);
+    line-height: 1.8;
+    font-size: 14px;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-top: 25px;
+}
+
+.stat {
+    background: white;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+}
+
+.stat strong {
+    display: block;
+    font-size: 26px;
+}
+
+.stat span {
+    color: var(--gray);
+    font-size: 13px;
+}
+
+/* 編輯器 */
+
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.toolbar-group {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.editor-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+.panel {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    min-width: 0;
+}
+
+.panel-header {
+    padding: 15px 18px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+}
+
+.panel-header span:last-child {
+    color: var(--gray);
+    font-size: 12px;
+    font-weight: normal;
+}
+
+#editor {
+    width: 100%;
+    min-height: 570px;
+    padding: 22px;
+    border: 0;
+    outline: none;
+    resize: vertical;
+    line-height: 1.8;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    color: #222;
+}
+
+#preview {
+    min-height: 570px;
+    padding: 22px;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+
+#preview h1,
+#preview h2,
+#preview h3 {
+    border-bottom: 1px solid var(--light);
+    padding-bottom: 8px;
+}
+
+#preview h1 { font-size: 27px; }
+#preview h2 { font-size: 22px; }
+#preview h3 { font-size: 18px; }
+
+#preview code {
+    background: #eee;
+    padding: 3px 6px;
+    border-radius: 4px;
+}
+
+#preview pre {
+    background: #171717;
+    color: white;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+}
+
+#preview pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+#preview blockquote {
+    border-left: 4px solid #777;
+    padding-left: 15px;
+    color: #666;
+    margin-left: 0;
+}
+
+#preview table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#preview th,
+#preview td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#preview th {
+    background: #eee;
+}
+
+/* 模板 */
+
+.template-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.template-card button {
+    margin-top: auto;
+    align-self: flex-start;
+}
+
+.template-label {
+    display: inline-block;
+    background: #eee;
+    padding: 4px 9px;
+    font-size: 12px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.template-card p {
+    flex: 1;
+}
+
+footer {
+    text-align: center;
+    padding: 25px;
+    background: #171717;
+    color: #aaa;
+    font-size: 13px;
+}
+
+.status {
+    font-size: 13px;
+    color: #666;
+}
+
+@media(max-width: 850px) {
+    header {
+        height: auto;
+        padding: 15px 4%;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .editor-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media(max-width: 550px) {
+    main {
+        padding: 20px 13px 45px;
+    }
+
+    .hero {
+        padding: 45px 22px;
+    }
+
+    .grid,
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    nav button {
+        padding: 8px;
+        font-size: 13px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- 導覽列 -->
+<header>
+    <div class="logo">
+        <span>A</span> AGENT STUDIO
+    </div>
+
+    <nav>
+        <button class="active" data-page="home">首頁</button>
+        <button data-page="editor-page">規範管理</button>
+        <button data-page="templates-page">模板中心</button>
+    </nav>
+</header>
+
+<main>
+
+<!-- 首頁 -->
+<section class="page active" id="home">
+
+    <div class="hero">
+        <div class="tag">AI DEVELOPMENT RULES MANAGEMENT</div>
+
+        <h1>建立你的 AI 開發規範。</h1>
+
+        <p>
+            AGENT STUDIO 是一個專門管理 AGENTS.md
+            文件的平台。透過簡單的編輯工具與模板，
+            快速建立適合不同專案的 AI 開發規範。
+        </p>
+
+        <button class="btn light"
+                onclick="showPage('editor-page')">
+            開始建立文件 →
+        </button>
+
+        <button class="btn light"
+                onclick="showPage('templates-page')">
+            瀏覽模板
+        </button>
+    </div>
+
+    <h2 class="section-title">平台功能</h2>
+
+    <p class="section-desc">
+        從建立到匯出，一站完成你的 AI 開發規範。
+    </p>
+
+    <div class="grid">
+
+        <div class="card">
+            <div class="card-icon">✎</div>
+            <h3>規範管理</h3>
+            <p>自由建立及編輯 AGENTS.md，
+            整理專案開發規則與指令。</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">▤</div>
+            <h3>模板中心</h3>
+            <p>提供不同專案類型的範本，
+            讓使用者快速開始。</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">◉</div>
+            <h3>Markdown 預覽</h3>
+            <p>編輯文件的同時，
+            即時查看排版結果。</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">↓</div>
+            <h3>文件匯出</h3>
+            <p>將完成的規範下載成
+            AGENTS.md 檔案。</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">▣</div>
+            <h3>一鍵複製</h3>
+            <p>快速複製完整文件，
+            方便貼到其他開發工具。</p>
+        </div>
+
+        <div class="card">
+            <div class="card-icon">◷</div>
+            <h3>自動保存</h3>
+            <p>將編輯內容保存至瀏覽器，
+            下次開啟仍可繼續編輯。</p>
+        </div>
+
+    </div>
+
+    <div class="stats">
+        <div class="stat">
+            <strong>01</strong>
+            <span>建立文件</span>
+        </div>
+        <div class="stat">
+            <strong>02</strong>
+            <span>套用模板</span>
+        </div>
+        <div class="stat">
+            <strong>03</strong>
+            <span>預覽與匯出</span>
+        </div>
+    </div>
+
+</section>
+
+
+<!-- 規範管理 -->
+<section class="page" id="editor-page">
+
+    <h1>規範管理</h1>
+
+    <p class="section-desc">
+        在左側編輯 Markdown 文件，右側會即時顯示預覽。
+    </p>
+
+    <div class="toolbar">
+
+        <div class="toolbar-group">
+            <button class="btn" onclick="newDocument()">
+                ＋ 新增文件
+            </button>
+
+            <button class="btn light" onclick="copyDocument()">
+                複製內容
+            </button>
+
+            <button class="btn light" onclick="downloadDocument()">
+                ↓ 下載 AGENTS.md
+            </button>
+        </div>
+
+        <div class="toolbar-group">
+            <button class="btn light" onclick="saveDocument()">
+                保存文件
+            </button>
+        </div>
+
+    </div>
+
+    <div class="status" id="save-status">
+        ● 文件已準備就緒
+    </div>
+
+    <div class="editor-layout">
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <span>✎ Markdown 編輯器</span>
+                <span>EDITOR</span>
+            </div>
+
+            <textarea id="editor"
+                spellcheck="false"
+                placeholder="請輸入你的 AGENTS.md 內容..."></textarea>
+
+        </div>
+
+        <div class="panel">
+
+            <div class="panel-header">
+                <span>◉ 即時預覽</span>
+                <span>PREVIEW</span>
+            </div>
+
+            <div id="preview">
+                <p>開始輸入內容，即可查看預覽。</p>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- 模板中心 -->
+<section class="page" id="templates-page">
+
+    <h1>模板中心</h1>
+
+    <p class="section-desc">
+        選擇適合的專案類型，快速建立開發規範。
+    </p>
+
+    <div class="grid">
+
+        <div class="card template-card">
+            <span class="template-label">通用模板</span>
+            <h3>一般專案規範</h3>
+            <p>適合一般網站、個人專案及各類開發工作。</p>
+            <button class="btn"
+                onclick="useTemplate('general')">
+                套用模板
+            </button>
+        </div>
+
+        <div class="card template-card">
+            <span class="template-label">前端開發</span>
+            <h3>前端網站規範</h3>
+            <p>包含 HTML、CSS、JavaScript 及網頁設計規則。</p>
+            <button class="btn"
+                onclick="useTemplate('frontend')">
+                套用模板
+            </button>
+        </div>
+
+        <div class="card template-card">
+            <span class="template-label">後端開發</span>
+            <h3>後端系統規範</h3>
+            <p>包含 API、資料處理及程式架構規則。</p>
+            <button class="btn"
+                onclick="useTemplate('backend')">
+                套用模板
+            </button>
+        </div>
+
+        <div class="card template-card">
+            <span class="template-label">Python</span>
+            <h3>Python 開發規範</h3>
+            <p>適合 Python 專案、資料分析及自動化開發。</p>
+            <button class="btn"
+                onclick="useTemplate('python')">
+                套用模板
+            </button>
+        </div>
+
+        <div class="card template-card">
+            <span class="template-label">學習專案</span>
+            <h3>學生專題規範</h3>
+            <p>適合課堂作業、期末專題及個人學習專案。</p>
+            <button class="btn"
+                onclick="useTemplate('student')">
+                套用模板
+            </button>
+        </div>
+
+        <div class="card template-card">
+            <span class="template-label">自訂模板</span>
+            <h3>空白文件</h3>
+            <p>從零開始，建立自己的 AI 開發規範。</p>
+            <button class="btn"
+                onclick="useTemplate('blank')">
+                套用模板
+            </button>
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+<footer>
+    AGENT STUDIO © 2026 ｜ AI 開發規範管理平台
+</footer>
+
+
+<script>
+
+/* ==========================
+   頁面切換
+========================== */
+
+function showPage(pageId) {
+
+    document.querySelectorAll(".page").forEach(page => {
+        page.classList.remove("active");
+    });
+
+    document.getElementById(pageId).classList.add("active");
+
+    document.querySelectorAll("nav button").forEach(button => {
+        button.classList.toggle(
+            "active",
+            button.dataset.page === pageId
+        );
+    });
+
+    window.scrollTo(0, 0);
+}
+
+document.querySelectorAll("nav button").forEach(button => {
+    button.addEventListener("click", () => {
+        showPage(button.dataset.page);
+    });
+});
+
+
+/* ==========================
+   文件初始內容
+========================== */
+
+const defaultContent = `# AGENTS.md
+
+## 專案名稱
+我的專案
+
+## 專案目的
+請在此填寫專案的主要目的。
+
+## 開發規範
+1. 使用繁體中文。
+2. 保持程式碼整潔。
+3. 維持統一的設計風格。
+4. 修改程式前先了解現有架構。
+
+## AI 助理工作原則
+1. 優先理解使用者的需求。
+2. 不要任意刪除原有功能。
+3. 修改後確認程式是否正常運作。
+4. 不確定的資訊應先詢問，不可自行編造。
+
+## 檔案管理
+請在此填寫檔案與資料夾管理規則。
+`;
+
+
+/* ==========================
+   模板資料
+========================== */
+
+const templates = {
+
+general: `# AGENTS.md
+
+## 專案名稱
+一般開發專案
+
+## 專案目的
+說明本專案的目標及主要功能。
+
+## 開發規範
+1. 使用清楚且容易理解的程式碼。
+2. 保持一致的命名方式。
+3. 修改前先閱讀相關檔案。
+4. 不任意刪除原有功能。
+
+## AI 助理工作原則
+1. 依照使用者需求執行任務。
+2. 修改後檢查程式是否正常。
+3. 不確定的資訊應先詢問。
+4. 使用繁體中文回覆。
+`,
+
+frontend: `# AGENTS.md
+
+## 專案名稱
+前端網站開發專案
+
+## 技術架構
+- HTML
+- CSS
+- JavaScript
+
+## 網站設計規範
+1. 使用響應式網頁設計。
+2. 所有頁面保持一致的風格。
+3. 使用清楚的導覽列。
+4. 保持排版整齊及易讀。
+
+## 程式碼規範
+1. HTML 結構保持清楚。
+2. CSS 樣式集中管理。
+3. JavaScript 功能模組化。
+4. 避免重複程式碼。
+
+## 操作要求
+1. 所有按鈕必須具有實際功能。
+2. 網站需支援桌面及手機。
+3. 修改後檢查各項功能。
+`,
+
+backend: `# AGENTS.md
+
+## 專案名稱
+後端系統開發專案
+
+## 技術規範
+1. 保持清楚的資料夾架構。
+2. API 命名保持一致。
+3. 做好輸入資料驗證。
+4. 妥善處理錯誤訊息。
+
+## 程式碼規範
+1. 使用清楚的函式及變數名稱。
+2. 避免重複程式碼。
+3. 保持模組化。
+4. 註解重要的處理邏輯。
+
+## 安全規範
+1. 不在程式碼中直接寫入密碼。
+2. 保護使用者資料。
+3. 檢查外部輸入。
+4. 不暴露敏感資訊。
+`,
+
+python: `# AGENTS.md
+
+## 專案名稱
+Python 開發專案
+
+## 開發規範
+1. 使用 Python 撰寫程式。
+2. 使用清楚的變數名稱。
+3. 函式應負責單一工作。
+4. 適當加入程式註解。
+
+## 資料處理
+1. 確認資料格式。
+2. 處理缺失值。
+3. 避免直接修改原始資料。
+4. 檢查輸出結果。
+
+## 程式品質
+1. 保持程式碼整潔。
+2. 避免重複程式碼。
+3. 處理例外情況。
+4. 執行後確認結果正確。
+`,
+
+student: `# AGENTS.md
+
+## 專案名稱
+學生課程專題
+
+## 專案目的
+說明本次課程專題的研究目的。
+
+## 開發規範
+1. 使用繁體中文。
+2. 保持程式碼容易閱讀。
+3. 遵守課程作業要求。
+4. 不隨意更動原有功能。
+
+## 文件管理
+1. 保持檔案名稱清楚。
+2. 整理專案資料夾。
+3. 保留重要版本。
+4. 記錄重要修改。
+
+## AI 助理原則
+1. 協助理解程式碼。
+2. 解釋重要修改內容。
+3. 不編造執行結果。
+4. 使用適合初學者理解的說明。
+`,
+
+blank: `# AGENTS.md
+
+## 專案名稱
+
+## 專案目的
+
+## 技術架構
+
+## 開發規範
+
+1.
+2.
+3.
+
+## AI 助理工作原則
+
+1.
+2.
+3.
+
+## 其他注意事項
+
+`
+};
+
+
+/* ==========================
+   編輯器與即時預覽
+========================== */
+
+const editor = document.getElementById("editor");
+const preview = document.getElementById("preview");
+const statusText = document.getElementById("save-status");
+
+let saveTimer;
+
+function escapeHTML(text) {
+    return text.replace(/[&<>"']/g, char => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    })[char]);
+}
+
+function renderMarkdown(markdown) {
+
+    const lines = markdown.split("\n");
+    let html = "";
+    let inList = false;
+    let inCode = false;
+    let codeLines = [];
+
+    function closeList() {
+        if (inList) {
+            html += "</ul>";
+            inList = false;
+        }
+    }
+
+    function inline(text) {
+        let safe = escapeHTML(text);
+
+        safe = safe.replace(/`([^`]+)`/g,
+            "<code>$1</code>");
+
+        safe = safe.replace(/\*\*(.*?)\*\*/g,
+            "<strong>$1</strong>");
+
+        safe = safe.replace(/\*(.*?)\*/g,
+            "<em>$1</em>");
+
+        return safe;
+    }
+
+    for (const line of lines) {
+
+        if (line.trim().startsWith("```")) {
+            closeList();
+
+            if (!inCode) {
+                inCode = true;
+                codeLines = [];
+            } else {
+                html += "<pre><code>" +
+                    escapeHTML(codeLines.join("\n")) +
+                    "</code></pre>";
+                inCode = false;
+            }
+            continue;
+        }
+
+        if (inCode) {
+            codeLines.push(line);
+            continue;
+        }
+
+        if (/^\s*[-*]\s+/.test(line)) {
+            if (!inList) {
+                html += "<ul>";
+                inList = true;
+            }
+
+            html += "<li>" +
+                inline(line.replace(/^\s*[-*]\s+/, "")) +
+                "</li>";
+            continue;
+        }
+
+        closeList();
+
+        if (/^### /.test(line)) {
+            html += "<h3>" + inline(line.slice(4)) + "</h3>";
+        } else if (/^## /.test(line)) {
+            html += "<h2>" + inline(line.slice(3)) + "</h2>";
+        } else if (/^# /.test(line)) {
+            html += "<h1>" + inline(line.slice(2)) + "</h1>";
+        } else if (/^> /.test(line)) {
+            html += "<blockquote>" + inline(line.slice(2)) + "</blockquote>";
+        } else if (/^---+$/.test(line.trim())) {
+            html += "<hr>";
+        } else if (/^\d+\.\s+/.test(line)) {
+            html += "<p>" + inline(line) + "</p>";
+        } else if (line.trim() !== "") {
+            html += "<p>" + inline(line) + "</p>";
+        }
+    }
+
+    closeList();
+
+    if (inCode) {
+        html += "<pre><code>" +
+            escapeHTML(codeLines.join("\n")) +
+            "</code></pre>";
+    }
+
+    return html || "<p>尚無預覽內容。</p>";
+}
+
+
+function updatePreview() {
+
+    preview.innerHTML = renderMarkdown(editor.value);
+
+    statusText.textContent = "● 編輯中";
+
+    clearTimeout(saveTimer);
+
+    saveTimer = setTimeout(() => {
+        saveDocument(true);
+    }, 700);
+}
+
+editor.addEventListener("input", updatePreview);
+
+
+/* ==========================
+   自動保存與手動保存
+========================== */
+
+function saveDocument(automatic = false) {
+
+    try {
+        localStorage.setItem("agentStudioContent", editor.value);
+
+        statusText.textContent = automatic
+            ? "● 已自動保存至瀏覽器"
+            : "● 文件保存成功";
+
+        return true;
+
+    } catch (error) {
+        statusText.textContent = "保存失敗，瀏覽器可能無法儲存資料。";
+        alert("保存失敗，請確認瀏覽器儲存空間。");
+        return false;
+    }
+}
+
+
+/* ==========================
+   載入文件
+========================== */
+
+function loadDocument() {
+
+    const saved = localStorage.getItem("agentStudioContent");
+
+    editor.value = saved !== null
+        ? saved
+        : defaultContent;
+
+    updatePreview();
+}
+
+
+/* ==========================
+   新增文件
+========================== */
+
+function newDocument() {
+
+    const confirmed = confirm(
+        "確定要建立新文件嗎？目前內容將被清空。"
+    );
+
+    if (!confirmed) return;
+
+    editor.value = defaultContent;
+
+    saveDocument();
+    updatePreview();
+}
+
+
+/* ==========================
+   套用模板
+========================== */
+
+function useTemplate(type) {
+
+    if (
+        editor.value.trim() !== "" &&
+        !confirm("套用模板會取代目前編輯器的內容，確定繼續嗎？")
+    ) {
+        return;
+    }
+
+    editor.value = templates[type];
+
+    saveDocument();
+    updatePreview();
+
+    showPage("editor-page");
+}
+
+
+/* ==========================
+   複製文件
+========================== */
+
+async function copyDocument() {
+
+    const content = editor.value;
+
+    try {
+        await navigator.clipboard.writeText(content);
+        alert("已成功複製 AGENTS.md 內容！");
+    } catch (error) {
+        editor.focus();
+        editor.select();
+
+        const success = document.execCommand("copy");
+
+        alert(success
+            ? "已成功複製文件內容！"
+            : "複製失敗，請手動選取內容複製。");
+    }
+}
+
+
+/* ==========================
+   下載文件
+========================== */
+
+function downloadDocument() {
+
+    const content = editor.value;
+
+    const blob = new Blob(
+        [content],
+        { type: "text/markdown;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = "AGENTS.md";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+    statusText.textContent = "● AGENTS.md 已下載";
+}
+
+
+/* ==========================
+   初始化
+========================== */
+
+loadDocument();
+
+</script>
+
+</body>
+</html>
